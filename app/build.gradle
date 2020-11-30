@@ -34,6 +34,7 @@ android {
         targetSdkVersion 27
         versionCode 45756
         versionName "4.6.0-pre"
+        signingConfig signingConfigs.release
     }
 
     applicationVariants.all { variant ->
