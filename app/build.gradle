@@ -4,6 +4,25 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 android {
     compileSdkVersion 28
 
+    signingConfigs {
+        def keystorePwd = null
+        def alias = null
+        def pwd = null
+        if (project.rootProject.file('local.properties').exists()) {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            keystorePwd = properties.getProperty("RELEASE_STORE_PASSWORD")
+            alias = properties.getProperty("RELEASE_KEY_ALIAS")
+            pwd = properties.getProperty("RELEASE_KEY_PASSWORD")
+        }
+        release {
+            storeFile file("edxpmanager.jks")
+            storePassword keystorePwd != null ? keystorePwd : System.getenv("KEYSTORE_PASS")
+            keyAlias alias != null ? alias : System.getenv("ALIAS_NAME")
+            keyPassword pwd != null ? pwd : System.getenv("ALIAS_PASS")
+        }
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -25,6 +44,8 @@ android {
     buildTypes {
         release {
             zipAlignEnabled true
+            minifyEnabled true
+            shrinkResources true
         }
         debug {
             zipAlignEnabled true
